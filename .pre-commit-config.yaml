@@ -1,0 +1,14 @@
+---
+repos:
+  - repo: git://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.43.0
+    hooks:
+      - id: terraform_fmt
+      - id: terraform_validate
+      - id: terraform_docs
+      - id: terraform_tfsec
+  - repo: https://github.com/bridgecrewio/checkov.git
+    rev: 1.0.564
+    hooks:
+      - id: checkov
+        args: [--soft-fail]
