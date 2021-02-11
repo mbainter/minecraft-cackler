@@ -22,8 +22,15 @@ module "default_vpc" {
   enable_nat_gateway = false
   enable_vpn_gateway = false
 
+  #enable_ssm_endpoint             = true
+  #ssm_endpoint_security_group_ids = [aws_security_group.ssm_endpoint.id]
+
+  #enable_ssmmessages_endpoint             = true
+  #ssmmessages_endpoint_security_group_ids = [aws_security_group.ssm_endpoint.id]
+
   #enable_kms_endpoint    = true
   #enable_lambda_endpoint = true
+  #enable_states_endpoint = true
 
   #enable_s3_endpoint        = true
   enable_public_s3_endpoint = true
