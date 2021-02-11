@@ -22,6 +22,12 @@ module "default_vpc" {
   enable_nat_gateway = false
   enable_vpn_gateway = false
 
+  #enable_kms_endpoint    = true
+  #enable_lambda_endpoint = true
+
+  #enable_s3_endpoint        = true
+  enable_public_s3_endpoint = true
+
   vpc_tags = {
     PackerAllowed = "true"
   }
