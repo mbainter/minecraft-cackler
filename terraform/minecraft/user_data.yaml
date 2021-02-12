@@ -1,0 +1,17 @@
+#cloud-config
+
+manage_etc_hosts: true
+
+bootcmd:
+  - set -ex
+  - rm -f /var/lib/cloud/instance/boot-finished
+  - rm -f /var/tmp/instance_is_ready
+  - test -z "$(blkid /dev/nvme1n1)" && mkfs -t xrs -L srv /dev/nvme1n1
+
+resize_rootfs: true
+
+mounts:
+  - ["/dev/nvme1n1", "/srv", "xfs", "auto,defaults,nodiratime,noatime", "0", "0"]
+
+runcmd:
+  - touch /var/tmp/instance_is_ready
