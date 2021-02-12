@@ -1,0 +1,13 @@
+---
+- name: "(ansible_role_base-ssh) Check for sshd config"
+  stat:
+    path: /etc/ssh/sshd_config
+  register: sshd_config_stat
+  check_mode: false
+
+- name: (ansible_role_base-ssh) Disable Root SSH Login
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#PermitRootLogin prohibit-password'
+    line: 'PermitRootLogin no'
+  when: sshd_config_stat.stat.exists

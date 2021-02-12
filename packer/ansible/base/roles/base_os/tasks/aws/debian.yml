@@ -1,0 +1,27 @@
+---
+- name: "(ansible_role_base-packages) Check for lifecycled"
+  stat:
+    path: /usr/local/bin/lifecycled
+  register: lifecycled_stat
+  check_mode: false
+
+- name: "(ansible_role_base-packages) Install lifecycled"
+  get_url:
+    url: "https://github.com/buildkite/lifecycled/releases/download/v{{ lifecycled_ver }}/lifecycled-linux-amd64"
+    dest: /usr/local/bin/lifecycled
+    owner: root
+    group: root
+    mode: 0755
+  when:
+    - not lifecycled_stat.stat.exists
+
+- name: "(ansible_role-base-packages) Install CFN Helper Scripts"
+  command:
+    argv:
+      - python3
+      - -m
+      - easy_install
+      - --script-dir
+      - /opt/aws/bin
+      - "https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-{{ cfn_bootstrap_ver }}.tar.gz"
+    creates: /opt/aws/bin/cfn-*

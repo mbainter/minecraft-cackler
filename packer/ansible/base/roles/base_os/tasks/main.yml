@@ -1,0 +1,92 @@
+---
+# tasks file for ansible_role_base
+
+- name: "(ansible_role_base) Set required vars and facts"
+  block:
+    - name: "(ansible_role_base) Read vars"
+      changed_when: false
+      check_mode: false
+      include_vars: "{{ lookup('first_found', params) }}"
+      vars:
+        params:
+          files:
+            - '{{ ansible_distribution | lower }}-{{ ansible_distribution_release | lower }}-{{ ansible_distribution_version }}.yml'
+            - '{{ ansible_distribution | lower }}-{{ ansible_distribution_release | lower }}.yml'
+            - '{{ ansible_distribution | lower }}.yml'
+          paths:
+            - 'vars'
+      tags:
+        - vars
+        - set_vars
+
+    - name: "(ansible_role_base) Check if running in AWS"
+      uri:
+        url: http://169.254.169.254/latest/meta-data
+        timeout: 2
+      register: aws_uri_check
+      check_mode: false
+      failed_when: false
+      tags:
+        - aws
+        - check_aws
+
+    - name: "(ansible_role_base) Set is_aws fact"
+      set_fact:
+        is_aws: "{{ (aws_uri_check.status == 200) | ternary(true, false, false) }}"
+      tags:
+        - aws
+        - check_aws
+
+    - name: "(ansible_role_base) Update/Upgrade Default Packages"
+      block:
+        # - name: "(ansible_role_base) Create apt daily update/upgrade override dirs"
+        #   file:
+        #     path: "/etc/systemd/system/{{ item }}.timer.d"
+        #     state: directory
+        #     mode: 0755
+        # - name: "(ansible_role_base) Create apt daily update/upgrade override configs"
+        #   template:
+        #     src: apt-daily-override.conf.j2
+        #     path: "/etc/systemd/system/{{ item }}.timer.d/override.conf"
+        #     owner: root
+        #     group: root
+        #     mode: 0644
+        #   loop:
+        #     - "apt-daily"
+        #     - "apt-daily-upgrade"
+        #   when:
+        #     - "ansible_service_mgr == 'systemd'"
+
+        - name: "(ansible_role_base) Update Base Debian Packages"
+          apt:
+            update_cache: true
+            upgrade: 'yes'
+          when:
+            - ansible_facts['os_family'] == 'Debian'
+      when:
+        - update_default_packages is defined
+        - update_default_packages
+
+    - name: "(ansible_role_base) Get Installed Packages"
+      package_facts:
+      when: get_package_facts
+  tags:
+    - always
+
+- name: "(ansible_role_base) Include Repo Install Task"
+  include_tasks: repos.yml
+  when: repo_install
+  tags:
+    - repo
+    - repos
+
+- name: "(ansible_role_base) Include Package Install Task"
+  include_tasks: packages.yml
+  when: install_default_packages
+  tags:
+    - package
+    - packages
+
+- name: "(ansible_role_base) Include SSH Configuration Task"
+  include_tasks: ssh.yml
+  when: ssh_config

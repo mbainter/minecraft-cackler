@@ -1,0 +1,10 @@
+---
+- name: "(ansible_role_base-repos) Install Add-Repo Prereqs"
+  package:
+    name: "{{ packages['prereqs'] }}"
+  when:
+    - packages['prereqs'] is defined
+    - packages['prereqs'] | length > 0
+
+- name: "(ansible_role_base-repos) Install Repos for {{ ansible_facts['os_family'] }}"
+  include_tasks: "repos/{{ ansible_facts['os_family'] | lower }}.yml"

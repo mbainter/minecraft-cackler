@@ -1,0 +1,21 @@
+---
+- name: Bootstrap System - AMI
+  hosts: all
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Wait for apt
+      shell: while lsof /var/lib/dpkg/lock-frontend ; do sleep 10; done
+      when: packer_builder_type != "docker"
+    - name: Bootstrap | Install python  # noqa 301
+      raw: test -e /usr/bin/python || (apt-get -y update && apt-get install -y apt-transport-https ca-certificates python3 python3-pip)
+      when: packer_builder_type != "docker"
+
+
+- name: Bootstrap System - Docker
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Bootstrap | Install python and sudo # noqa 301
+      raw: test -e /usr/bin/python || (apt-get -y update && apt-get install -y apt-transport-https ca-certificates python3 python3-pip sudo)
+      when: packer_builder_type == "docker"

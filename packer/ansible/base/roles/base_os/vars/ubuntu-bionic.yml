@@ -1,0 +1,38 @@
+---
+packages:
+  prereqs:
+    - gnupg
+    - python-apt
+    - python3-apt
+  base:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - dnsutils
+    - git
+    - htop
+    - jq
+    - lsof
+    - openjdk-8-jdk
+    - procps
+    - python-boto3
+    - python-packaging
+    - python-pip
+    - python3-boto3
+    - python3-packaging
+    - python3-pip
+    - sysstat
+    - unattended-upgrades
+    - unzip
+    - vim
+    - wget
+  aws:
+    - linux-aws
+    - linux-tools-aws
+  absent:
+    - awscli
+    - ntp
+    - sntp
+    - libopts25
+
+apt: {}

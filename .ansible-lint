@@ -1,0 +1,8 @@
+exclude_paths:
+  - ./roles/
+  - ./ansible_collections/
+  - ./molecule/
+skip_list:
+  #- '106'
+  - '701'
+  - '703'

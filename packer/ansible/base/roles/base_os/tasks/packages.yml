@@ -1,0 +1,35 @@
+---
+- name: "(ansible_role_base-packages) Set base packagelist fact"
+  set_fact:
+    packagelist: "{{ packages['base'] }}"
+  check_mode: false
+
+- name: "(ansible_role_base-packages) Include AWS packages if needed"
+  set_fact:
+    packagelist: "{{ (packagelist + packages['aws']) }}"
+  check_mode: false
+  when:
+    - is_aws
+    - packages['aws'] is defined
+    - packages['aws'] | length > 0
+
+- name: "(ansible_role_base-packages) Install packages"
+  package:
+    name: "{{ packagelist }}"
+    state: present
+
+- name: "(ansible_role_base-packages) Remove disallowed packages"
+  package:
+    name: "{{ packages['absent'] }}"
+    state: absent
+  when:
+    - packages['absent'] is defined
+    - packages['absent'] | length > 0
+
+- name: "(ansible_role_base-packages) Include AWS CLI v2 for {{ ansible_facts['os_family'] }}"
+  include_tasks: "awscliv2/{{ ansible_facts['os_family'] | lower }}.yml"
+
+- name: "(ansible_role_base-packages) Include AWS support packages for {{ ansible_distribution }} {{ ansible_distribution_release }}"
+  include_tasks: "aws/{{ ansible_os_family | lower }}.yml"
+  when:
+    - is_aws

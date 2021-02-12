@@ -1,0 +1,42 @@
+---
+- hosts: all
+  become: true
+
+  collections:
+    devsec.hardening
+
+  # NOTE: There's no arm64 supprot graalvm-ce with Java8 right now (02/2021)
+  #    - role: mbainter.graalvm
+  #      graalvm_java_version: '8'
+  roles:
+    - role: base_os
+    - role: devsec.hardening.os_hardening
+      os_auth_pw_max_age: 99999
+      os_auth_pw_min_age: 0
+      os_auth_auth_lockout_time: 300
+      os_security_users_allow: ['change_user']
+      os_selinux_state: disabled
+    - role: devsec.hardening.ssh_hardening
+      ssh_server_ports: [44390]
+      ssh_host_key_files:
+        - '/etc/ssh/ssh_host_rsa_key'
+        - '/etc/ssh/ssh_host_ed25519_key'
+      ssh_permit_tunnel: true
+      ssh_allow_tcp_forwarding: 'yes'
+      ssh_kerberos_support: false
+      ssh_print_pam_motd: true
+      ssh_print_last_log: true
+      ssh_max_auth_retries: 3
+      ssh_server_permit_environment_vars: 'yes'
+
+#       ssh_host_key_algorithms:
+#         - 'ssh-ed25519-cert-v01@openssh.com'
+#         - 'sk-ssh-ed25519-cert-v01@openssh.com'
+#         - 'rsa-sha2-512-cert-v01@openssh.com'
+#         - 'rsa-sha2-256-cert-v01@openssh.com'
+#         - 'ssh-rsa-cert-v01@openssh.com'
+#         - 'ssh-ed25519'
+#         - 'sk-ssh-ed25519@openssh.com'
+#         - 'rsa-sha2-512'
+#         - 'rsa-sha2-256'
+#         - 'ssh-rsa'

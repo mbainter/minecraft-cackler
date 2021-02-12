@@ -1,0 +1,8 @@
+---
+# Graalvm doesn't support Java8 on linux
+# roles:
+#   - name: mbainter.graalvm
+#     src: https://github.com/mbainter/ansible-role-graalvm
+
+collections:
+  - devsec.hardening
