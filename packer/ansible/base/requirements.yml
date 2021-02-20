@@ -5,4 +5,5 @@
 #     src: https://github.com/mbainter/ansible-role-graalvm
 
 collections:
+  - community.general
   - devsec.hardening

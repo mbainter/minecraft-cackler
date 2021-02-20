@@ -9,7 +9,7 @@ data "aws_iam_policy_document" "ec2_assume_role" {
   }
 }
 
-resource aws_iam_role "packer_build" {
+resource "aws_iam_role" "packer_build" {
   name               = "packer-build"
   assume_role_policy = data.aws_iam_policy_document.ec2_assume_role.json
 }

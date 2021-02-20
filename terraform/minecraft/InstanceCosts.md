@@ -7,8 +7,9 @@
 | r6gd.m   | 8 GB   | 1    | 60 GB  | 0.0576/hr |
 | t4g.l    | 8 GB   | 2    | N/A    | 0.0672/hr |
 | c6gd.l   | 4 GB   | 2    | 120 GB | 0.0768/hr |
-| m6g.l    | 8 GB   | 2    | 120 GB | 0.0770/hr |
+| m6g.l    | 8 GB   | 2    | N/A    | 0.0770/hr |
 | m6gd.l   | 8 GB   | 2    | 120 GB | 0.0904/hr |
+| r6g.l    | 16 GB  | 2    | N/A    | 0.1008/hr |
 | r6gd.l   | 16 GB  | 2    | 118 GB | 0.1152/hr |
 | t4g.xl   | 16 GB  | 4    | N/A    | 0.1344/hr |
 | c6gd.xl  | 8 GB   | 4    | 237 GB | 0.1536/hr |

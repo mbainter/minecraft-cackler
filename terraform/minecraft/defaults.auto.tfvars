@@ -1,3 +1,4 @@
 az = "us-west-2a"
 
-mc_instance_type = "m6g.large"
+test_mc_instance_type = "m6g.large"
+live_mc_instance_type = "r6g.large"

@@ -14,7 +14,7 @@ resource "aws_ebs_volume" "minecraft_world_test" {
 
 resource "aws_instance" "minecraft_test" {
   ami           = data.aws_ami.ubuntu_arm64.id
-  instance_type = var.mc_instance_type
+  instance_type = var.test_mc_instance_type
   subnet_id     = tolist(data.aws_subnet_ids.public.ids)[0]
   key_name      = "mbainter"
   user_data     = file("${path.module}/user_data.yaml")
@@ -62,7 +62,7 @@ resource "aws_ebs_volume" "minecraft_world" {
   encrypted         = true
 
   type = "gp3"
-  size = 15
+  size = 20
 
   tags = {
     Name        = "MinecraftWorld"
@@ -75,7 +75,7 @@ resource "aws_ebs_volume" "minecraft_world" {
 # - increase root volume size at launch
 resource "aws_instance" "minecraft" {
   ami           = data.aws_ami.ubuntu_arm64.id
-  instance_type = var.mc_instance_type
+  instance_type = var.live_mc_instance_type
   subnet_id     = tolist(data.aws_subnet_ids.public.ids)[0]
   key_name      = "mbainter"
   user_data     = file("${path.module}/user_data.yaml")
@@ -109,6 +109,6 @@ resource "aws_instance" "minecraft" {
 resource "aws_volume_attachment" "minecraft_world" {
   device_name = "/dev/sdh"
 
-  volume_id   = aws_ebs_volume.minecraft_world_test.id
-  instance_id = aws_instance.minecraft_test.id
+  volume_id   = aws_ebs_volume.minecraft_world.id
+  instance_id = aws_instance.minecraft.id
 }

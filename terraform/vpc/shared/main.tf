@@ -33,6 +33,7 @@ module "default_vpc" {
   #enable_states_endpoint = true
 
   #enable_s3_endpoint        = true
+  #s3_endpoint_type          = "gateway"
   enable_public_s3_endpoint = true
 
   vpc_tags = {
