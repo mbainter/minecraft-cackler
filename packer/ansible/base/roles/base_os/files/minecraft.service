@@ -8,16 +8,17 @@ User=mcuser
 Group=minecraft
 Restart=always
 KillSignal=SIGCONT
+Type=forking
 
-ExecStart=/usr/bin/tmux new-session -d -s minecraft '/srv/minecraft/minecraft_server-run.sh'
+ExecStart=/usr/bin/tmux new-session -d -s minecraft '/srv/minecraft/minecraft_server-run.sh' bash
 
-ExecStop=/usr/bin/tmux send -t minecraft:0 tellraw @a ["",{"text":"Server: ","italic":true,"color":"gray"},{"text":"SERVER IS SHUTTING DOWN IN 15 SECONDS!","italic":true,"color":"red"}]
+ExecStop=/usr/bin/tmux send -t minecraft:0 tellraw @a '["",{"text":"Server: ","italic":true,"color":"gray"},{"text":"SERVER IS SHUTTING DOWN IN 15 SECONDS!","italic":true,"color":"red"}]'
 ExecStop=/bin/sleep 5
-ExecStop=/usr/bin/tmux send -t minecraft:0 tellraw @a ["",{"text":"Server: ","italic":true,"color":"gray"},{"text":"SERVER IS SHUTTING DOWN IN 10 SECONDS!","italic":true,"color":"red"}]
+ExecStop=/usr/bin/tmux send -t minecraft:0 tellraw @a '["",{"text":"Server: ","italic":true,"color":"gray"},{"text":"SERVER IS SHUTTING DOWN IN 10 SECONDS!","italic":true,"color":"red"}]'
 ExecStop=/bin/sleep 5
-ExecStop=/usr/bin/tmux send -t minecraft:0 tellraw @a ["",{"text":"Server: ","italic":true,"color":"gray"},{"text":"SERVER IS SHUTTING DOWN IN 05 SECONDS!","italic":true,"color":"red"}]
+ExecStop=/usr/bin/tmux send -t minecraft:0 tellraw @a '["",{"text":"Server: ","italic":true,"color":"gray"},{"text":"SERVER IS SHUTTING DOWN IN 05 SECONDS!","italic":true,"color":"red"}]'
 ExecStop=/bin/sleep 5
-ExecStop=/usr/bin/tmux send -t minecraft:0 tellraw @a ["",{"text":"Server: ","italic":true,"color":"gray"},{"text":"SERVER IS SHUTTING DOWN NOW!","italic":true,"color":"red"}]
+ExecStop=/usr/bin/tmux send -t minecraft:0 tellraw @a '["",{"text":"Server: ","italic":true,"color":"gray"},{"text":"SERVER IS SHUTTING DOWN NOW!","italic":true,"color":"red"}]'
 ExecStop=/usr/bin/tmux send -t minecraft:0 save-all
 ExecStop=/usr/bin/tmux send -t minecraft:0 stop
 

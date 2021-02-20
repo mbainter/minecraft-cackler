@@ -88,6 +88,12 @@ resource "aws_instance" "minecraft" {
 
   iam_instance_profile = aws_iam_instance_profile.minecraft.name
 
+  root_block_device {
+    encrypted   = true
+    volume_type = "gp3"
+    volume_size = 10
+  }
+
   metadata_options {
     http_tokens   = "required"
     http_endpoint = "enabled"
