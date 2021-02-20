@@ -1,0 +1,45 @@
+---
+# Specify the uid and gid to ensure they match what
+# will be set in the mount point
+- name: "(ansible_role_base) Create minecraft group"
+  group:
+    gid: 999
+    name: minecraft
+    state: present
+
+- name: "(ansible_role_base) Create minecraft user"
+  user:
+    uid: 999
+    name: mcuser
+    group: minecraft
+    shell: /usr/bin/bash
+    state: present
+
+- name: "(ansible_role_base) Install support files"
+  copy:
+    src: item
+    dest: "/usr/local/bin/{{ item }}"
+    owner: root
+    group: minecraft
+    mode: '0750'
+  loop:
+    - rclone_backup.sh
+    - restic_backup.sh
+    - restic_setup.sh
+    - minecraft_restore.sh
+
+- name: "(ansible_role_base) Install hourly backup cronjob"
+  copy:
+    src: bifrost-hourly-backup
+    dest: /etc/cron.hourly/bifrost-hourly-backup
+    owner: root
+    group: root
+    mode: '0750'
+
+- name: "(ansible_role_base) Install daily backup cronjob"
+  copy:
+    src: bifrost-daily-sync
+    dest: /etc/cron.hourly/bifrost-daily-sync
+    owner: root
+    group: root
+    mode: '0755'

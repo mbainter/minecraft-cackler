@@ -1,0 +1,24 @@
+[
+  "",
+  {
+    "text": "[$PREFIX] ",
+    "color": "gray",
+    "italic": true
+  },
+  {
+    "text": "$MESSAGE",
+    "color": "$COLOR",
+    "italic": true,
+    "hoverEvent": {
+      "action": "show_text",
+      "value": {
+        "text": "",
+        "extra": [
+          {
+            "text": "$HOVER_MESSAGE"
+          }
+        ]
+      }
+    }
+  }
+]
