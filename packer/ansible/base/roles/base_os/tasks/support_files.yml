@@ -78,3 +78,12 @@
     owner: root
     group: root
     mode: '0755'
+
+- name: "(ansible_role_base) Install xterm-kitty terminfo"
+  become: true
+  copy:
+    src: xterm-kitty
+    dest: /usr/share/terminfo/x/xterm-kitty
+    owner: root
+    group: root
+    mode: '0644'
