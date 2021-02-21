@@ -4,6 +4,11 @@
   gather_facts: false
   become: true
   tasks:
+    - name: Create users
+      user:
+        name: mbainter
+        shell: /usr/bin/bash
+        state: present
     - name: Wait for apt
       shell: while lsof /var/lib/dpkg/lock-frontend ; do sleep 10; done
       when: packer_builder_type != "docker"

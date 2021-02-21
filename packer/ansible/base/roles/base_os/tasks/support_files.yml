@@ -2,22 +2,34 @@
 # Specify the uid and gid to ensure they match what
 # will be set in the mount point
 - name: "(ansible_role_base) Create minecraft group"
+  become: true
   group:
-    gid: 999
+    gid: 998
     name: minecraft
     state: present
+    system: true
 
 - name: "(ansible_role_base) Create minecraft user"
+  become: true
   user:
-    uid: 999
+    uid: 998
     name: mcuser
     group: minecraft
     shell: /usr/bin/bash
     state: present
+    system: true
+
+- name: "(ansible_role_base) Add ubuntu user to minecraft group"
+  become: true
+  user:
+    name: ubuntu
+    groups: minecraft
+    append: true
 
 - name: "(ansible_role_base) Install support files"
+  become: true
   copy:
-    src: item
+    src: '{{ item }}'
     dest: "/usr/local/bin/{{ item }}"
     owner: root
     group: minecraft
@@ -28,7 +40,29 @@
     - restic_setup.sh
     - minecraft_restore.sh
 
+- name: "(ansible_role_base) Install minecraft service"
+  become: true
+  copy:
+    src: minecraft.service
+    dest: /etc/systemd/system/minecraft.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: "(ansible_role_base) Reload systemd"
+  become: true
+  systemd:
+    daemon_reload: true
+
+- name: "(ansible_role_base) Enable minecraft service"
+  become: true
+  systemd:
+    name: minecraft
+    enabled: true
+    state: stopped
+
 - name: "(ansible_role_base) Install hourly backup cronjob"
+  become: true
   copy:
     src: bifrost-hourly-backup
     dest: /etc/cron.hourly/bifrost-hourly-backup
@@ -37,6 +71,7 @@
     mode: '0750'
 
 - name: "(ansible_role_base) Install daily backup cronjob"
+  become: true
   copy:
     src: bifrost-daily-sync
     dest: /etc/cron.hourly/bifrost-daily-sync
