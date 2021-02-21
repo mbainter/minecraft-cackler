@@ -4,20 +4,18 @@
 - name: "(ansible_role_base) Create minecraft group"
   become: true
   group:
-    gid: 998
+    gid: 1001
     name: minecraft
     state: present
-    system: true
 
 - name: "(ansible_role_base) Create minecraft user"
   become: true
   user:
-    uid: 998
+    uid: 1001
     name: mcuser
     group: minecraft
     shell: /usr/bin/bash
     state: present
-    system: true
 
 - name: "(ansible_role_base) Add ubuntu user to minecraft group"
   become: true
