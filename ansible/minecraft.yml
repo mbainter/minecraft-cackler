@@ -59,6 +59,15 @@
         group: minecraft
         mode: '0644'
 
+    - name: "(Minecraft) Deploy restic exclusions configuration"
+      become: true
+      copy:
+        src: restic_excludes.txt
+        dest: /srv/minecraft/restic_excludes.txt
+        owner: mcuser
+        group: minecraft
+        mode: '0644'
+
     - name: "(Minecraft) Deploy Minecraft startup script"
       become: true
       copy:
