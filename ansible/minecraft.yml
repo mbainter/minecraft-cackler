@@ -1,0 +1,69 @@
+---
+
+- name: AWS Configuration
+  hosts: tag_Minecraft
+  vars:
+    ansible_port: 44390
+    ansible_user: ubuntu
+    ansible_sftp_extra_args: '-P 44390'
+
+  tasks:
+    - name: "(Minecraft) Create ops file"
+      become: true
+      copy:
+        dest: /srv/minecraft/ops.json
+        content: "{{ ops | to_nice_json }}"
+        owner: mcuser
+        group: minecraft
+
+    - name: "(Minecraft) Create whitelist file"
+      become: true
+      copy:
+        dest: /srv/minecraft/whitelist.json
+        content: "{{ whitelist | to_nice_json }}"
+        owner: mcuser
+        group: minecraft
+
+    - name: "(Minecraft) Create eula.txt file"
+      become: true
+      copy:
+        dest: /srv/minecraft/eula.txt
+        content: "eula=true"
+        owner: mcuser
+        group: minecraft
+
+    - name: "(Minecraft) Deploy server.properties"
+      become: true
+      template:
+        src: "server.properties.j2"
+        dest: /srv/minecraft/server.properties
+        owner: mcuser
+        group: minecraft
+        mode: '0644'
+
+    - name: "(Minecraft) Deploy Terraforged config"
+      become: true
+      copy:
+        src: terraforged-generator.json
+        dest: /srv/minecraft/config/terraforged/terraforged-generator.json
+        owner: mcuser
+        group: minecraft
+        mode: '0644'
+
+    - name: "(Minecraft) Deploy Default Waystone configuration"
+      become: true
+      copy:
+        src: waystones-server.toml
+        dest: /srv/minecraft/defaultconfigs/waystones-server.toml
+        owner: mcuser
+        group: minecraft
+        mode: '0644'
+
+    - name: "(Minecraft) Deploy Minecraft startup script"
+      become: true
+      copy:
+        src: minecraft_server-run.sh
+        dest: /srv/minecraft/minecraft_server-run.sh
+        owner: mcuser
+        group: minecraft
+        mode: '0755'

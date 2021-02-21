@@ -1,0 +1,16 @@
+---
+plugin: aws_ec2
+
+regions:
+  - us-west-2
+
+strict: False
+
+keyed_groups:
+  - key: tags.Name
+    prefix: tag
+  - key: tags.Service
+    prefix: tag
+
+hostnames:
+  - ip-address
