@@ -13,5 +13,49 @@ resize_rootfs: true
 mounts:
   - ["/dev/nvme1n1", "/srv", "xfs", "auto,defaults,nodiratime,noatime", "0", "0"]
 
+write_files:
+  - content: |
+      #!/bin/sh
+
+      TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 600")
+
+      metadata () {
+        curl -H "X-aws-ec2-metadata-token: $TOKEN" -s "http://169.254.169.254/latest/meta-data/$1"
+      }
+
+      instance_id=$(metadata "instance-id")
+      public_ip=$(metadata "public-ipv4")
+      fqdn="${FQDN}"
+
+      export AWS_AZ=$(metadata "/placement/availability-zone")
+      export AWS_DEFAULT_REGION=${AWS_AZ%[a-z]}
+      TTL=300
+      cat << EOT > /tmp/aws_r53_batch.json
+      {
+        "Comment": "Update public DNS name",
+        "Changes": [
+          {
+            "Action": "UPSERT",
+            "ResourceRecordSet": {
+              "Name": "${fqdn}",
+              "Type": "A",
+              "TTL": ${TTL},
+              "ResourceRecords": [
+                {
+                  "Value": "${public_ip}"
+                }
+              ]
+            }
+          }
+        ]
+      }
+      EOT
+
+      aws route53 change-resource-record-sets --hosted-zone-id ${ZONE_ID} --change-batch file:///tmp/aws_r53_batch.json
+      rm -f /tmp/aws_r53_batch.json
+    path: /var/lib/cloud/scripts/per-boot/20_set_route53_dns.sh
+    permissions: 0750
+
 runcmd:
+  - /var/lib/cloud/scripts/per-boot/20_set_route53_dns.sh
   - touch /var/tmp/instance_is_ready

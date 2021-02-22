@@ -55,7 +55,7 @@ sync
 sleep 1
 
 # Last, rclone to the offsite bucket
-rclone sync $local_rclone_target $remote_rclone_target
+rclone sync $local_rclone_target $remote_rclone_target --update --use-server-modtime --fast-list
 
 set +o pipefail
 

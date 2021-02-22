@@ -65,6 +65,39 @@ resource "aws_iam_role_policy_attachment" "restic_s3" {
   policy_arn = aws_iam_policy.restic_s3.arn
 }
 
+data "aws_iam_policy_document" "route53" {
+  statement {
+    sid = "AllowEC2TagAccess"
+
+    actions = ["ec2:DescribeTags"]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "AllowRoute53Updates"
+
+    actions = ["route53:ChangeResourceRecordSets"]
+
+    resources = [
+      "arn:aws:route53:::hostedzone/${aws_route53_zone.mc-trampledstones-com.zone_id}"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "route53" {
+  name        = "Route53Access"
+  path        = "/"
+  description = "Access policy for Instances to make Route53 updates"
+
+  policy = data.aws_iam_policy_document.route53.json
+}
+
+resource "aws_iam_role_policy_attachment" "route53" {
+  role       = aws_iam_role.minecraft.name
+  policy_arn = aws_iam_policy.route53.arn
+}
+
 resource "aws_iam_role_policy_attachment" "minecraft_ssm" {
   role       = aws_iam_role.minecraft.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
