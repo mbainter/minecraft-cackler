@@ -35,4 +35,10 @@ packages:
     - sntp
     - libopts25
 
-apt: {}
+apt:
+  overviewer:
+    key_urL: https://overviewer.org/debian/overviewer.gpg.asc
+    key_id: AB6EAF871F4C1BCE
+    repo_url: https://overviewer.org/debian
+    repo_release: "./"
+    repo_component: ""

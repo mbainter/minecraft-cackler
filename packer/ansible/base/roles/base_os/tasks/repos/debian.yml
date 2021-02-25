@@ -2,7 +2,7 @@
 - name: "(ansible_role_base-repos) Install repo keys"
   apt_key:
     url: "{{ item.value.key_url }}"
-    id: "{{ item.value. key_id }}"
+    id: "{{ item.value.key_id }}"
     state: present
   loop: "{{ query('dict', apt) }}"
 
