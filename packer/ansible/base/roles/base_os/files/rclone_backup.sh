@@ -1,6 +1,6 @@
 #!/bin/bash
 
-base_path=/mnt/gamocosm_bifrost_minecraft
+base_path=/srv
 # Test if we've already run today
 rclone_complete_file="/var/tmp/rclone_completed.$(date +%F)"
 if [ -f $rclone_complete_file ]; then
@@ -8,10 +8,10 @@ if [ -f $rclone_complete_file ]; then
   exit 0;
 fi
 
-export RESTIC_PASSWORD_FILE="${base_path}/.restic/password"
+export RESTIC_PASSWORD_COMMAND="/usr/local/bin/fetch_restic_pass.sh"
 restic_local_backup="${base_path}/backups"
 local_rclone_target="/var/tmp/rclone_local"
-remote_rclone_target="b2:minecraft-bifrost/do"
+remote_rclone_target="s3:bifrost-minecraft-backups/Valhelsia2"
 
 # Test to make sure that restic isn't in the middle of a backup
 # If it is, wait for that to complete indefinitely
@@ -22,7 +22,7 @@ flock 100 || exit 1
 trap 'rm -f /var/tmp/minecraft_backup.lock' EXIT
 
 # If any stage of the backup fails, fail the whole thing
-set -o pipefile
+set -o pipefail
 
 # First, cleanup our local restic repository
 # Keep:

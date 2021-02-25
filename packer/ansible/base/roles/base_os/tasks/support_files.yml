@@ -38,6 +38,33 @@
     - restic_setup.sh
     - minecraft_restore.sh
 
+- name: "(ansible_role_base) Install restic pw cmd files"
+  become: true
+  copy:
+    src: fetch_restic_pass.sh
+    dest: /usr/local/bin/fetch_restic_pass.sh
+    owner: mcuser
+    group: adm
+    mode: '0570'
+
+- name: "(ansible_role_base) ensure minecraft share directory exists"
+  become: true
+  file:
+    path: /usr/local/share/minecraft
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: "(ansible_role_base) Install minecraft msg template"
+  become: true
+  copy:
+    src: msg_template.json
+    dest: /usr/local/share/minecraft/msg_template.json
+    owner: root
+    group: minecraft
+    mode: '0644'
+
 - name: "(ansible_role_base) Install minecraft service"
   become: true
   copy:
@@ -59,23 +86,14 @@
     enabled: true
     state: stopped
 
-- name: "(ansible_role_base) Install hourly backup cronjob"
+- name: "(ansible_role_base) Install backup cronjob"
   become: true
   copy:
     src: bifrost-hourly-backup
-    dest: /etc/cron.hourly/bifrost-hourly-backup
+    dest: /etc/cron.hourly/bifrost-backup
     owner: root
     group: root
     mode: '0750'
-
-- name: "(ansible_role_base) Install daily backup cronjob"
-  become: true
-  copy:
-    src: bifrost-daily-sync
-    dest: /etc/cron.hourly/bifrost-daily-sync
-    owner: root
-    group: root
-    mode: '0755'
 
 - name: "(ansible_role_base) Install xterm-kitty terminfo"
   become: true

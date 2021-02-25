@@ -1,3 +1,0 @@
-#!/bin/bash
-
-sudo -u mcuser /usr/local/bin/rclone_backup.sh

@@ -1,13 +1,13 @@
 [
   "",
   {
-    "text": "$PREFIX",
+    "text": "PREFIX",
     "italic": true,
     "color": "gray"
   },
   {
-    "text": "$MESSAGE",
+    "text": "MESSAGE",
     "italic": true,
-    "color": "$COLOR"
+    "color": "COLOR"
   }
 ]

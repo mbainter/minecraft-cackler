@@ -1,3 +1,4 @@
 #!/bin/bash
 
 sudo -u mcuser /usr/local/bin/restic_backup.sh
+sudo -u mcuser /usr/local/bin/rclone_backup.sh
