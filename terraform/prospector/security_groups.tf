@@ -32,3 +32,15 @@ resource "aws_security_group_rule" "prospector_allow_slack_https" {
   #tfsec:ignore:AWS006
   cidr_blocks = ["0.0.0.0/0"]
 }
+
+resource "aws_security_group_rule" "prospector_https_out" {
+  security_group_id = aws_security_group.prospector.id
+  description       = "Allow all outbound https access for Prospector"
+
+  type      = "egress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+  #tfsec:ignore:AWS007
+  cidr_blocks = ["0.0.0.0/0"]
+}
