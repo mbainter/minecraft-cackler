@@ -26,6 +26,58 @@
     - packages['absent'] is defined
     - packages['absent'] | length > 0
 
+
+- name: "(ansible_role_base) Download restic"
+  get_url:
+    url: "https://github.com/restic/restic/releases/download/v{{ restic.version }}/restic_{{ restic.version }}_linux_arm64.bz2"
+    dest: "/var/tmp/restic.bz2"
+
+- name: "(ansible_role_base) Uncompress restic"
+  command:
+    cmd: bunzip2 /var/tmp/restic.bz2
+    creates: /var/tmp/restic
+
+- name: "(ansible_role_base) Install restic"
+  become: true
+  copy:
+    src: /var/tmp/restic
+    dest: /usr/local/bin/restic
+    remote_src: true
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: "(ansible_role_base) Install rclone"
+  become: true
+  apt:
+    deb: "https://github.com/rclone/rclone/releases/download/v{{ rclone.version }}/rclone-v{{ rclone.version }}-linux-arm64.deb"
+  register: rclone_result
+  until: rclone_result is succeeded
+  delay: 5
+  retries: 5
+
+- name: "(ansible_role_base) Install telegraf"
+  become: true
+  apt:
+    deb: "https://dl.influxdata.com/telegraf/releases/telegraf_{{ telegraf.version }}_arm64.deb"
+  register: telegraf_result
+  until: telegraf_result is succeeded
+  delay: 5
+  retries: 5
+
+  # For now, overviewer only releases 64-bit packages
+  # so don't try to install on ARM-based platforms
+- name: "(ansible_role_base) Install Overviewer"
+  become: true
+  package:
+    name: "minecraft-overviewer"
+    state: present
+  register: overviewer_result
+  when: ansible_architecture == "X86_64"
+  until: overviewer_result is succeeded
+  delay: 5
+  retries: 5
+
 - name: "(ansible_role_base-packages) Include AWS CLI v2 for {{ ansible_facts['os_family'] }}"
   include_tasks: "awscliv2/{{ ansible_facts['os_family'] | lower }}.yml"
 
