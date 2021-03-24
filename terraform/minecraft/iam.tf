@@ -50,6 +50,85 @@ data "aws_iam_policy_document" "restic_s3" {
       "${aws_s3_bucket.minecraft.arn}/*",
     ]
   }
+
+  statement {
+    sid = "RoleLockedAccess"
+
+    actions = [
+      "ec2:StopInstances",
+      "ec2:StartInstances",
+    ]
+
+    resources = [
+      "*",
+    ]
+
+    condition {
+      test     = "ArnEquals"
+      variable = "ec2:InstanceProfile"
+
+      values = [
+        aws_iam_instance_profile.minecraft.arn
+      ]
+    }
+  }
+
+  statement {
+    sid = "ReadAccess"
+
+    actions = [
+      "ec2:DescribeTags",
+      "ec2:Describe*"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "ReadInstanceProfiles"
+
+    actions = [
+      "iam:GetInstanceProfile",
+      "iam:ListInstanceProfiles",
+    ]
+    resources = [
+      "*",
+    ]
+  }
+
+  statement {
+    sid = "ElbReadAccess"
+
+    actions = [
+      "elasticloadbalancing:Describe*",
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "ParameterStoreListAccess"
+
+    actions = [
+      "ssm:DescribeParameters"
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "ParameterStoreReadAccess"
+
+    actions = [
+      "ssm:GetParameter",
+      "ssm:GetParameters",
+      "ssm:GetParametersByPath"
+    ]
+
+    resources = [
+      "arn:aws:ssm:${local.region}:${local.account_id}:parameter/shared/minecraft/*",
+    ]
+  }
+
 }
 
 resource "aws_iam_policy" "restic_s3" {
