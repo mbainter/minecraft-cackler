@@ -1,0 +1,13 @@
+[
+  "",
+  {
+    "text": "PREFIX",
+    "italic": true,
+    "color": "gray"
+  },
+  {
+    "text": "MESSAGE",
+    "italic": true,
+    "color": "COLOR"
+  }
+]

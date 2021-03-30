@@ -1,0 +1,18 @@
+---
+AvailabilityZone: 'us-west-2a'  # [REQUIRED] The Availability Zone in which to create the volume.
+Encrypted: true # Specifies whether the volume should be encrypted.
+Iops: 3000 # The number of I/O operations per second (IOPS) to provision for an io1 or io2 volume, with a maximum ratio of 50 IOPS/GiB for io1, and 500 IOPS/GiB for io2.
+KmsKeyId: 'arn:aws:kms:us-west-2:932431194240:key/01cf562b-27e6-45a6-bcfe-f367dda63975' # The identifier of the AWS Key Management Service (AWS KMS) customer master key (CMK) to use for Amazon EBS encryption.
+Size: 29 # The size of the volume, in GiBs.
+VolumeType: gp3 # The volume type. Valid values are: standard, io1, io2, gp2, sc1, st1.
+DryRun: false # Checks whether you have the required permissions for the action, without actually making the request, and provides an error response.
+TagSpecifications: # The tags to apply to the volume during creation.
+- ResourceType: volume
+  Tags: # The tags to apply to the resource.
+  - Key: 'Name'  # The key of the tag.
+    Value: 'RcloneBackup' # The value of the tag.
+  - Key: 'Environment'  # The key of the tag.
+    Value: 'live' # The value of the tag.
+  - Key: 'Service'  # The key of the tag.
+    Value: 'Minecraft' # The value of the tag.
+MultiAttachEnabled: false # Specifies whether to enable Amazon EBS Multi-Attach.

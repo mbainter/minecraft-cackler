@@ -76,3 +76,55 @@
         owner: mcuser
         group: minecraft
         mode: '0755'
+
+    - name: "(Minecraft) Deploy minecraft shared resources"
+      become: true
+      copy:
+        src: "{{ item }}"
+        dest: "/usr/local/share/minecraft/{{ item }}"
+        owner: root
+        group: minecraft
+        mode: '0644'
+      loop:
+        - create_rclone_volume.yaml
+        - msg_template.json
+
+    - name: "(Minecraft) Deploy backup scripts"
+      become: true
+      copy:
+        src: "{{ item }}"
+        dest: "/usr/local/bin/{{ item }}"
+        owner: root
+        group: minecraft
+        mode: '0755'
+      loop:
+        - restic_backup.sh
+        - restic_setup.sh
+        - minecraft_restore.sh
+        - rclone_backup.sh
+
+    - name: "(Minecraft) Deploy Minecraft startup script"
+      become: true
+      copy:
+        src: fetch_restic_pass.sh
+        dest: /usr/local/bin/fetch_restic_pass.sh
+        owner: mcuser
+        group: minecraft
+        mode: '0755'
+
+    - name: "(Minecraft) Create rclone backup path"
+      become: true
+      file:
+        path: /mnt/rclone_local
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: "(Minecraft) Setup fstab for rclone"
+      ansible.posix.mount:
+        path: /mnt/rclone_local
+        src: LABEL=rclone_tmp
+        fstype: xfs
+        opts: noauto,user,defaults,nodiratime,noatime,comment=rclone_backup
+        state: present
