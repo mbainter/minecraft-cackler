@@ -116,6 +116,104 @@ data "aws_iam_policy_document" "restic_s3" {
   }
 
   statement {
+    sid = "CreateRcloneVolume"
+
+    actions = [
+      "ec2:CreateVolume",
+    ]
+
+    resources = [
+      "arn:aws:ec2:*:*:volume/*",
+    ]
+
+    condition {
+      test     = "ForAllValues:StringEquals"
+      variable = "aws:TagKeys"
+
+      values = [
+        "Name",
+        "Environment",
+        "Service"
+      ]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Name"
+
+      values = [
+        "RcloneBackup"
+      ]
+    }
+  }
+
+  statement {
+    sid = "ManageMinecraftServerVolumes"
+
+    actions = [
+      "ec2:AttachVolume",
+      "ec2:DetachVolume",
+    ]
+
+    resources = [
+      "arn:aws:ec2:*:*:instance/*"
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "ec2:ResourceTag/Service"
+
+      values = [
+        "Minecraft"
+      ]
+    }
+  }
+
+  statement {
+    sid = "ManageRcloneVolume"
+
+    actions = [
+      "ec2:AttachVolume",
+      "ec2:DetachVolume",
+      "ec2:DeleteVolume"
+    ]
+
+    resources = [
+      "arn:aws:ec2:*:*:volume/*",
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "ec2:ResourceTag/Name"
+
+      values = [
+        "RcloneBackup"
+      ]
+    }
+  }
+
+  statement {
+    sid = "AllowTagCreationOnLaunch"
+
+    actions = [
+      "ec2:CreateTags"
+    ]
+
+    resources = [
+      "arn:aws:ec2:*:*:volume/*",
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "ec2:CreateAction"
+
+      values = [
+        "CreateVolume"
+      ]
+    }
+  }
+
+  statement {
     sid = "ParameterStoreReadAccess"
 
     actions = [

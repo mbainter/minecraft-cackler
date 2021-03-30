@@ -67,7 +67,7 @@ resource "aws_ebs_volume" "minecraft_world" {
   tags = {
     Name        = "MinecraftWorld"
     Service     = "Minecraft"
-    Environment = "test"
+    Environment = "live"
   }
 }
 
@@ -102,7 +102,7 @@ resource "aws_instance" "minecraft" {
   tags = {
     Name        = "Minecraft"
     Service     = "Minecraft"
-    Environment = "test"
+    Environment = "live"
   }
 }
 
