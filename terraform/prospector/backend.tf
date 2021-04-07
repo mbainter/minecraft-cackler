@@ -11,7 +11,7 @@ terraform {
     organization = "bainterfam"
 
     workspaces {
-      name = "minecraft"
+      name = "prospector"
     }
   }
 }
