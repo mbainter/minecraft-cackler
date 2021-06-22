@@ -77,6 +77,41 @@
         group: minecraft
         mode: '0755'
 
+    - name: "(Minecraft) Deploy Minecraft systemd unitfile"
+      become: true
+      copy:
+        src: minecraft.service
+        dest: /etc/systemd/system/minecraft.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: "(Minecraft) Deploy yardboss service"
+      become: true
+      template:
+        src: "yardboss.service.j2"
+        dest: /etc/systemd/system/server.properties
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: "(Minecraft) Reload systemd"
+      become: true
+      systemd:
+        daemon_reload: true
+
+    - name: "(Minecraft) Enable minecraft at boot"
+      become: true
+      systemd:
+        name: minecraft
+        enabled: true
+
+    - name: "(Minecraft) Enable yardboss at boot"
+      become: true
+      systemd:
+        name: yardboss
+        enabled: true
+
     - name: "(Minecraft) Deploy minecraft shared resources"
       become: true
       copy:
@@ -103,7 +138,7 @@
         - minecraft_restore.sh
         - rclone_backup.sh
 
-    - name: "(Minecraft) Deploy Minecraft startup script"
+    - name: "(Minecraft) Deploy restic password command"
       become: true
       copy:
         src: fetch_restic_pass.sh

@@ -3,3 +3,6 @@ ops: "{{ vault_ops }}"
 whitelist: "{{ vault_whitelist }}"
 rcon_password: "{{ vault_rcon_password }}"
 world_seed: "{{ vault_world_seed }}"
+
+slack_channel_id: "{{ vault_slack_channel_id }}"
+slack_api_key: "{{ vault_slack_api_key }}"

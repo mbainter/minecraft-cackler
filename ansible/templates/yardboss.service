@@ -1,0 +1,16 @@
+[Unit]
+Description=yardboss
+Requires=minecraft.service
+After=minecraft.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5s
+Environment=RCON_PASSWORD={{ rcon_password }}
+Environment=API_KEY={{ slack_api_key }}
+Environment=CHANNEL_ID={{ slack_channel_id }}
+ExecStart=/home/ubuntu/yardboss
+
+[Install]
+WantedBy=multi-user.target
