@@ -3,7 +3,7 @@ set -x
 cd /srv/minecraft
 
 
-VH2_URL="https://media.forgecdn.net/files/3211/31/Valhelsia_2-2.3.2-SERVER.zip"
+VH2_URL="https://media.forgecdn.net/files/3283/29/Valhelsia_2-2.3.3-SERVER.zip"
 #curl -Ls "$VH2_URL" -o Valhelsia_2-SERVER.zip
 
 #unzip Valhelsia_2-SERVER.zip
