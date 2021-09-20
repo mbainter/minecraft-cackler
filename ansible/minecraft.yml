@@ -40,6 +40,8 @@
         owner: mcuser
         group: minecraft
         mode: '0644'
+      tags:
+        - properties
 
     - name: "(Minecraft) Deploy Terraforged config"
       become: true
