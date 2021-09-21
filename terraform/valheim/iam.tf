@@ -157,6 +157,11 @@ resource "aws_iam_role" "valheim_control_lambda" {
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 }
 
+resource "aws_iam_role_policy_attachment" "valheim_lambda_exec" {
+  role       = aws_iam_role.valheim_control_lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
 resource "aws_iam_role_policy_attachment" "valheim_control_lambda" {
   role       = aws_iam_role.valheim_control_lambda.name
   policy_arn = aws_iam_policy.valheim_control_lambda.arn
