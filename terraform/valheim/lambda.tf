@@ -29,7 +29,7 @@ resource "aws_lambda_function" "valheim_control" {
   }
 
 
-  handler = "start.handler"
+  handler = "${each.key}.handler"
 
   filename         = "${each.key}.zip"
   source_code_hash = data.archive_file.lambda[each.key].output_base64sha256
