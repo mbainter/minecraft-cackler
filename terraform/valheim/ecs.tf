@@ -74,7 +74,7 @@ locals {
     secrets = [
       {
         name      = "SERVER_PASS"
-        valueFrom = "shared/valheim/server_pass"
+        valueFrom = "arn:aws:ssm:${local.region}:${local.account_id}:parameter/shared/valheim/server_pass"
       }
     ]
 
