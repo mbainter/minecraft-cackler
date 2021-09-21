@@ -14,7 +14,7 @@ resource "aws_lambda_function" "valheim_control" {
   description = "${title(each.key)} the Valheim service"
 
   runtime = "nodejs12.x"
-  role    = ""
+  role    = aws_iam_role.valheim_control_lambda.arn
 
   memory_size = 128
   timeout     = 300

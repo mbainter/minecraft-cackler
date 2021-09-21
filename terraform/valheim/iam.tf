@@ -140,3 +140,96 @@ data "aws_iam_policy_document" "valheim_backup" {
     ]
   }
 }
+
+data "aws_iam_policy_document" "lambda_assume_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "valheim_control_lambda" {
+  name               = "valheim-control-lambda-exec"
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "valheim_control_lambda" {
+  role       = aws_iam_role.valheim_control_lambda.name
+  policy_arn = aws_iam_policy.valheim_control_lambda.arn
+}
+
+resource "aws_iam_policy" "valheim_control_lambda" {
+  name        = "valheim-lambda-control-access"
+  path        = "/"
+  description = "Access policy to control Valheim service"
+
+  policy = data.aws_iam_policy_document.valheim_control_lambda.json
+}
+
+data "aws_iam_policy_document" "valheim_control_lambda" {
+  statement {
+    sid = "EC2Access"
+
+    actions = [
+      "ec2:DescribeNetworkInterfaces",
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "ParameterStoreListAccess"
+
+    actions = [
+      "ssm:DescribeParameters"
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "ParameterStoreReadAccess"
+
+    actions = [
+      "ssm:GetParameter",
+      "ssm:GetParameters",
+      "ssm:GetParametersByPath"
+    ]
+
+    resources = [
+      "arn:aws:ssm:${local.region}:${local.account_id}:parameter/shared/valheim/*",
+    ]
+  }
+
+  #   statement {
+  #     actions = [
+  #       "secretsmanager:DescribeSecret",
+  #       "secretsmanager:GetSecretValue"
+  #     ]
+  #     resources = [aws_secretsmanager_secret.valheim.arn]
+  #   }
+
+  statement {
+    sid = "ECSAccess"
+
+    actions = [
+      "ecs:UpdateService",
+      "ecs:DescribeServices",
+      "ecs:ListTasks",
+      "ecs:DescribeTasks"
+    ]
+
+    resources = ["*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "ecs:cluster"
+
+      values = [aws_ecs_cluster.valheim.arn]
+    }
+  }
+}
