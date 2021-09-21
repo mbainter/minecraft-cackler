@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk')
 const ecs = new AWS.ECS()
-const secrets = new AWS.SecretsManager()
+//const secrets = new AWS.SecretsManager()
+const ssm = new AWS.SSM()
 const ec2 = new AWS.EC2()
 function log(message, context) {
   console.log(JSON.stringify({ message, ...context }))
@@ -30,13 +31,22 @@ exports.handler = async () => {
   // get PublicIP
   const ip = await ec2.describeNetworkInterfaces({ NetworkInterfaceIds: [eni] }).promise()
     .then( res => res.NetworkInterfaces[0].Association.PublicIp )
+
   // get password
+  const password = await ssm.getParameter({
+    Name: SecretId,
+    WithDecryption: true
+  }).promise().then( res => res.Value )
+
+  // get password
+  /*
   const password = await secrets.getSecretValue({ SecretId }).promise()
     .then( res => {
       const value = res.SecretString
       const blob = JSON.parse( value )
       return blob["password"]
     })
+  */
   // respond
   return { message: "started", ip, password, bucket }
 }
