@@ -38,6 +38,7 @@ locals {
     PRE_SERVER_RUN_HOOK           = "aws s3 sync s3://${var.valheim_backups_bucket}/worlds /config/worlds --delete"
     POST_SERVER_SHUTDOWN_HOOK     = "aws s3 sync /config/worlds s3://${var.valheim_backups_bucket}/worlds --delete"
     POST_BACKUP_HOOK              = "aws s3 sync /config/backups s3://${var.valheim_backups_bucket}/backups --delete"
+    SERVER_PASS                   = "yeehaw"
   }
 
   container_definition = {
@@ -71,12 +72,12 @@ locals {
 
     environment = [for k, v in local.task_environment : { name = k, value = tostring(v) }]
 
-    secrets = [
-      {
-        name      = "SERVER_PASS"
-        valueFrom = "arn:aws:ssm:${local.region}:${local.account_id}:parameter/shared/valheim/server_pass"
-      }
-    ]
+    #secrets = [
+    #  {
+    #    name      = "SERVER_PASS"
+    #    valueFrom = "arn:aws:ssm:${local.region}:${local.account_id}:parameter/shared/valheim/server_pass"
+    #  }
+    #]
 
     logConfiguration = {
       logDriver = "awslogs"

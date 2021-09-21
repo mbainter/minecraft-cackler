@@ -1,7 +1,7 @@
 variable "docker_image" {
   type        = string
   description = "Docker image to use for the Fargate tasks"
-  default     = "lloesche/valheim-server"
+  default     = "ghcr.io/lloesche/valheim-server:latest"
 }
 
 variable "world_name" {
@@ -42,4 +42,3 @@ variable "valheim_backups_ro" {
   description = "List of read-only users for the S3 bucket"
   default     = []
 }
-
