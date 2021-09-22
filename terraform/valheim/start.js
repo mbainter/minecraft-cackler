@@ -33,10 +33,12 @@ exports.handler = async () => {
     .then( res => res.NetworkInterfaces[0].Association.PublicIp )
 
   // get password
+  /*
   const password = await ssm.getParameter({
     Name: SecretId,
     WithDecryption: true
   }).promise().then( res => res.Value )
+  */
 
   // get password
   /*
@@ -48,5 +50,6 @@ exports.handler = async () => {
     })
   */
   // respond
-  return { message: "started", ip, password, bucket }
+  //return { message: "started", ip, password, bucket }
+  return { message: "started", ip, bucket }
 }
