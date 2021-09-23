@@ -17,9 +17,9 @@ locals {
     "aws --version"
   ]
   task_environment = {
-    SERVER_NAME                   = var.world_name,
+    SERVER_NAME                   = title(var.world_name),
     SERVER_PORT                   = 2456,
-    WORLD_NAME                    = var.world_name,
+    WORLD_NAME                    = title(var.world_name),
     SERVER_PUBLIC                 = true,
     UPDATE_INTERVAL               = 900,
     BACKUPS_INTERVAL              = 1800,
