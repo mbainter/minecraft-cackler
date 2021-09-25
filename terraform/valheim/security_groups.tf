@@ -33,6 +33,17 @@ resource "aws_security_group_rule" "security_group_icmp_type_3_in" {
   to_port     = -1
 }
 
+resource "aws_security_group_rule" "security_group_icmp_type_8_in" {
+  security_group_id = aws_security_group.valheim.id
+  description       = "ICMP echo request messages inbound"
+  type              = "ingress"
+  protocol          = "icmp"
+  #tfsec:ignore:AWS006
+  cidr_blocks = ["0.0.0.0/0"]
+  from_port   = 8
+  to_port     = 0
+}
+
 resource "aws_security_group_rule" "security_group_icmp_type_11_in" {
   security_group_id = aws_security_group.valheim.id
   description       = "ICMP destination unreachable messages inbound"
