@@ -78,7 +78,10 @@ data "aws_iam_policy_document" "valheim_backups" {
 
     principals {
       type = "AWS"
-      identifiers = formatlist("arn:aws:iam::%s:user/%s", local.account_id, concat(var.valheim_backups_admins, var.valheim_backups_ro))
+      identifiers = concat(
+        formatlist("arn:aws:iam::%s:user/%s", local.account_id, concat(var.valheim_backups_admins, var.valheim_backups_ro)),
+        [aws_iam_role.valheim_backup.arn]
+      )
     }
 
     actions = [
@@ -88,7 +91,7 @@ data "aws_iam_policy_document" "valheim_backups" {
       "s3:ListBucketVersions",
     ]
 
-    resources = [aws_s3_bucket.valheim_usw2.arn]
+    resources = [aws_s3_bucket.valheim.arn]
   }
 
   statement {
@@ -103,7 +106,7 @@ data "aws_iam_policy_document" "valheim_backups" {
       "s3:DeleteBucket",
     ]
 
-    resources = [aws_s3_bucket.valheim_usw2.arn]
+    resources = [aws_s3_bucket.valheim.arn]
 
     condition {
       test     = "Null"
@@ -131,7 +134,7 @@ data "aws_iam_policy_document" "valheim_backups" {
       "s3:ListMultipartUploadParts",
     ]
 
-    resources = ["${aws_s3_bucket.valheim_usw2.arn}/*"]
+    resources = ["${aws_s3_bucket.valheim.arn}/*"]
 
     condition {
       test     = "Null"
@@ -156,7 +159,7 @@ data "aws_iam_policy_document" "valheim_backups" {
       "s3:ListMultipartUploadParts",
     ]
 
-    resources = ["${aws_s3_bucket.valheim_usw2.arn}/*"]
+    resources = ["${aws_s3_bucket.valheim.arn}/*"]
 
     condition {
       test     = "Null"
@@ -167,13 +170,27 @@ data "aws_iam_policy_document" "valheim_backups" {
       ]
     }
   }
-}
 
-resource "aws_s3_bucket_policy" "valheim_usw2" {
-  provider = aws.us-west-2
+  statement {
+    sid = "AllowValheimRoleAccess"
 
-  bucket = aws_s3_bucket.valheim_usw2.id
-  policy = data.aws_iam_policy_document.valheim_backups.json
+    principals {
+      type = "AWS"
+      identifiers = [
+        aws_iam_role.valheim_backup.arn
+      ]
+    }
+
+    actions = [
+      "s3:PutObject*",
+      "s3:GetObject*",
+      "s3:DeleteObject",
+      "s3:AbortMultipartUpload",
+      "s3:ListMultipartUploadParts",
+    ]
+
+    resources = ["${aws_s3_bucket.valheim.arn}/*"]
+  }
 }
 
 resource "aws_s3_bucket_policy" "valheim" {
