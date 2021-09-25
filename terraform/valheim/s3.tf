@@ -1,5 +1,7 @@
 #tfsec:ignore:AWS002
 resource "aws_s3_bucket" "valheim_usw2" {
+  provider = aws.us-west-2
+
   bucket        = "mordheim-valheim-backups"
   force_destroy = false
 

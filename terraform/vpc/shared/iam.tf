@@ -34,7 +34,7 @@ data "aws_iam_policy_document" "packer_build" {
       "lambda:ListVersionsByFunction",
     ]
 
-    resources = ["arn:aws:lambda:${local.region}:${local.account_id}:function:*"]
+    resources = ["arn:aws:lambda:*:${local.account_id}:function:*"]
   }
 
   statement {
