@@ -35,6 +35,41 @@ resource "aws_s3_bucket" "valheim_usw2" {
   }
 }
 
+#tfsec:ignore:AWS002
+resource "aws_s3_bucket" "valheim" {
+  bucket        = "baintermfam-valheim-backups"
+  force_destroy = false
+
+  versioning {
+    enabled = true
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+
+  lifecycle_rule {
+    id      = "global"
+    enabled = true
+
+    prefix = "/"
+
+    expiration {
+      days = 10
+    }
+  }
+
+  tags = {
+    Name      = "valheim-backups"
+    Service   = "Valheim"
+    ManagedBy = "Terraform"
+  }
+}
+
 data "aws_iam_policy_document" "valheim_backups" {
   policy_id = "ValheimBackupsPolicy"
 
@@ -43,10 +78,7 @@ data "aws_iam_policy_document" "valheim_backups" {
 
     principals {
       type = "AWS"
-      identifiers = concat(
-        formatlist("arn:aws:iam::%s:user/%s", local.account_id, concat(var.valheim_backups_admins, var.valheim_backups_ro)),
-        [aws_iam_role.valheim_backup.arn]
-      )
+      identifiers = formatlist("arn:aws:iam::%s:user/%s", local.account_id, concat(var.valheim_backups_admins, var.valheim_backups_ro))
     }
 
     actions = [
@@ -135,32 +167,16 @@ data "aws_iam_policy_document" "valheim_backups" {
       ]
     }
   }
-
-  statement {
-    sid = "AllowValheimRoleAccess"
-
-    principals {
-      type = "AWS"
-      identifiers = [
-        aws_iam_role.valheim_backup.arn
-      ]
-    }
-
-    actions = [
-      "s3:PutObject*",
-      "s3:GetObject*",
-      "s3:DeleteObject",
-      "s3:AbortMultipartUpload",
-      "s3:ListMultipartUploadParts",
-    ]
-
-    resources = ["${aws_s3_bucket.valheim_usw2.arn}/*"]
-  }
 }
 
 resource "aws_s3_bucket_policy" "valheim_usw2" {
   provider = aws.us-west-2
 
   bucket = aws_s3_bucket.valheim_usw2.id
+  policy = data.aws_iam_policy_document.valheim_backups.json
+}
+
+resource "aws_s3_bucket_policy" "valheim" {
+  bucket = aws_s3_bucket.valheim.id
   policy = data.aws_iam_policy_document.valheim_backups.json
 }
