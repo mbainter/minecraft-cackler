@@ -8,5 +8,11 @@ provider "aws" {
   allowed_account_ids = [var.allowed_account_id]
 }
 
+provider "aws" {
+  alias               = "us-west-2"
+  region              = "us-west-2"
+  allowed_account_ids = [var.allowed_account_id]
+}
+
 provider "archive" {}
 provider "local" {}

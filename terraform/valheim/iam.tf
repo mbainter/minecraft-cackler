@@ -61,7 +61,7 @@ data "aws_iam_policy_document" "valheim_exec" {
     ]
 
     resources = [
-      "arn:aws:ssm:${local.region}:${local.account_id}:parameter/shared/valheim/*",
+      "arn:aws:ssm:*:${local.account_id}:parameter/shared/valheim/*",
     ]
   }
 }
@@ -96,7 +96,7 @@ data "aws_iam_policy_document" "valheim_backup" {
     ]
 
     resources = [
-      aws_s3_bucket.valheim.arn,
+      aws_s3_bucket.valheim_usw2.arn,
     ]
   }
 
@@ -112,7 +112,7 @@ data "aws_iam_policy_document" "valheim_backup" {
     ]
 
     resources = [
-      "${aws_s3_bucket.valheim.arn}/*",
+      "${aws_s3_bucket.valheim_usw2.arn}/*",
     ]
   }
 
@@ -136,7 +136,7 @@ data "aws_iam_policy_document" "valheim_backup" {
     ]
 
     resources = [
-      "arn:aws:ssm:${local.region}:${local.account_id}:parameter/shared/valheim/*",
+      "arn:aws:ssm:*:${local.account_id}:parameter/shared/valheim/*",
     ]
   }
 }
@@ -206,7 +206,7 @@ data "aws_iam_policy_document" "valheim_control_lambda" {
     ]
 
     resources = [
-      "arn:aws:ssm:${local.region}:${local.account_id}:parameter/shared/valheim/*",
+      "arn:aws:ssm:*:${local.account_id}:parameter/shared/valheim/*",
     ]
   }
 

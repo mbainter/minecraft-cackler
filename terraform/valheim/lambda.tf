@@ -24,7 +24,7 @@ resource "aws_lambda_function" "valheim_control" {
       CLUSTER = aws_ecs_cluster.valheim.arn
       SERVICE = aws_ecs_service.valheim.name
       SECRET  = "shared/valheim/server_pass"
-      BUCKET  = aws_s3_bucket.valheim.id
+      BUCKET  = aws_s3_bucket.valheim_usw2.id
     }
   }
 

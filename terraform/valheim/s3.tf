@@ -1,6 +1,6 @@
 #tfsec:ignore:AWS002
-resource "aws_s3_bucket" "valheim" {
-  bucket        = var.valheim_backups_bucket
+resource "aws_s3_bucket" "valheim_usw2" {
+  bucket        = "mordheim-valheim-backups"
   force_destroy = false
 
   versioning {
@@ -27,7 +27,7 @@ resource "aws_s3_bucket" "valheim" {
   }
 
   tags = {
-    Name      = var.valheim_backups_bucket
+    Name      = "mordheim-valheim-backups"
     Service   = "Valheim"
     ManagedBy = "Terraform"
   }
@@ -54,7 +54,7 @@ data "aws_iam_policy_document" "valheim_backups" {
       "s3:ListBucketVersions",
     ]
 
-    resources = [aws_s3_bucket.valheim.arn]
+    resources = [aws_s3_bucket.valheim_usw2.arn]
   }
 
   statement {
@@ -69,7 +69,7 @@ data "aws_iam_policy_document" "valheim_backups" {
       "s3:DeleteBucket",
     ]
 
-    resources = [aws_s3_bucket.valheim.arn]
+    resources = [aws_s3_bucket.valheim_usw2.arn]
 
     condition {
       test     = "Null"
@@ -97,7 +97,7 @@ data "aws_iam_policy_document" "valheim_backups" {
       "s3:ListMultipartUploadParts",
     ]
 
-    resources = ["${aws_s3_bucket.valheim.arn}/*"]
+    resources = ["${aws_s3_bucket.valheim_usw2.arn}/*"]
 
     condition {
       test     = "Null"
@@ -122,7 +122,7 @@ data "aws_iam_policy_document" "valheim_backups" {
       "s3:ListMultipartUploadParts",
     ]
 
-    resources = ["${aws_s3_bucket.valheim.arn}/*"]
+    resources = ["${aws_s3_bucket.valheim_usw2.arn}/*"]
 
     condition {
       test     = "Null"
@@ -152,11 +152,13 @@ data "aws_iam_policy_document" "valheim_backups" {
       "s3:ListMultipartUploadParts",
     ]
 
-    resources = ["${aws_s3_bucket.valheim.arn}/*"]
+    resources = ["${aws_s3_bucket.valheim_usw2.arn}/*"]
   }
 }
 
-resource "aws_s3_bucket_policy" "valheim" {
-  bucket = aws_s3_bucket.valheim.id
+resource "aws_s3_bucket_policy" "valheim_usw2" {
+  provider = aws.us-west-2
+
+  bucket = aws_s3_bucket.valheim_usw2.id
   policy = data.aws_iam_policy_document.valheim_backups.json
 }
